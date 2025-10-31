@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="hi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>मनरेगा जिला प्रदर्शन | MGNREGA District Performance</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header class="header">
+        <button class="lang-toggle" onclick="toggleLanguage()">
+            <i class="fas fa-language"></i> <span id="langText">English</span>
+        </button>
+        <h1 id="mainTitle">मनरेगा जिला प्रदर्शन डैशबोर्ड</h1>
+        <p id="mainSubtitle">ग्रामीण रोजगार गारंटी योजना - अपने जिले का प्रदर्शन जानें</p>
+    </header>
+
+    <div class="container">
+        <section class="district-selector">
+            <h2 id="selectDistrictTitle">🗺️ अपना जिला चुनें</h2>
+            <select id="districtSelect" onchange="loadDistrictData()">
+                <option value="">-- जिला चुनें --</option>
+                <option value="bhopal">भोपाल (Bhopal)</option>
+                <option value="indore">इंदौर (Indore)</option>
+                <option value="jabalpur">जबलपुर (Jabalpur)</option>
+                <option value="gwalior">ग्वालियर (Gwalior)</option>
+                <option value="ujjain">उज्जैन (Ujjain)</option>
+                <option value="sagar">सागर (Sagar)</option>
+                <option value="dewas">देवास (Dewas)</option>
+                <option value="satna">सतना (Satna)</option>
+                <option value="ratlam">रतलाम (Ratlam)</option>
+                <option value="rewa">रीवा (Rewa)</option>
+            </select>
+            <br>
+            <button class="auto-detect-btn" onclick="autoDetectDistrict()">
+                <i class="fas fa-location-arrow"></i>
+                <span id="autoDetectText">मेरे जिले का पता लगाएं</span>
+            </button>
+        </section>
+
+        <div class="loading" id="loadingSpinner">
+            <div class="spinner"></div>
+            <p id="loadingText">डेटा लोड हो रहा है...</p>
+        </div>
+
+        <div id="mainContent" style="display: none;">
+            <section class="quick-stats">
+                <div class="stat-card">
+                    <div class="stat-icon">📋</div>
+                    <div class="stat-value" id="totalJobCards">2,45,678</div>
+                    <div class="stat-label" id="jobCardsLabel">कुल जॉब कार्ड</div>
+                    <div class="stat-sublabel" id="jobCardsSub">Total Job Cards</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📅</div>
+                    <div class="stat-value" id="employmentDays">78</div>
+                    <div class="stat-label" id="daysLabel">औसत रोजगार दिवस</div>
+                    <div class="stat-sublabel" id="daysSub">Average Employment Days</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-value" id="totalWages">₹45.2 Cr</div>
+                    <div class="stat-label" id="wagesLabel">कुल मजदूरी</div>
+                    <div class="stat-sublabel" id="wagesSub">Total Wages Paid</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">👷</div>
+                    <div class="stat-value" id="activeWorkers">1,89,450</div>
+                    <div class="stat-label" id="workersLabel">सक्रिय कामगार</div>
+                    <div class="stat-sublabel" id="workersSub">Active Workers</div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <div class="nav-item active" onclick="scrollToSection('stats')">
+            <i class="fas fa-chart-bar"></i>
+            <span id="navStats">आंकड़े</span>
+        </div>
+        <div class="nav-item" onclick="scrollToSection('performance')">
+            <i class="fas fa-trophy"></i>
+            <span id="navPerformance">प्रदर्शन</span>
+        </div>
+        <div class="nav-item" onclick="scrollToSection('education')">
+            <i class="fas fa-book"></i>
+            <span id="navEducation">जानकारी</span>
+        </div>
+        <div class="nav-item" onclick="shareData()">
+            <i class="fas fa-share-alt"></i>
+            <span id="navShare">शेयर</span>
+        </div>
+    </nav>
+    <section class="dashboard">
+        <div class="dashboard-header">
+            <h2 class="dashboard-title" id="performanceTitle">📊 प्रदर्शन विश्लेषण</h2>
+            <div class="performance-badge excellent" id="performanceBadge">
+                <i class="fas fa-smile"></i>
+                <span id="badgeText">उत्कृष्ट प्रदर्शन</span>
+            </div>
+        </div>
+
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span class="metric-title" id="metric1Title">रोजगार दिवस प्रगति</span>
+                    <span class="tooltip">
+                        <i class="fas fa-info-circle info-icon"></i>
+                        <span class="tooltip-text" id="tooltip1">यह दर्शाता है कि आपके जिले में औसतन कितने दिन काम मिला।
+                            100 दिन की गारंटी में से जितना ज्यादा, उतना अच्छा।</span>
+                    </span>
+                </div>
+                <div class="metric-value-container">
+                    <div class="metric-main-value">78/100</div>
+                    <div class="metric-subvalue" id="metric1Sub">दिन प्रति परिवार</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 78%;">78%</div>
+                </div>
+                <div class="trend-indicator up">
+                    <i class="fas fa-arrow-up"></i>
+                    <span id="trend1">पिछले महीने से 12% बेहतर</span>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span class="metric-title" id="metric2Title">समय पर भुगतान</span>
+                    <span class="tooltip">
+                        <i class="fas fa-info-circle info-icon"></i>
+                        <span class="tooltip-text" id="tooltip2">कितने प्रतिशत मजदूरों को समय पर वेतन मिला। समय पर
+                            मजदूरी मिलना बहुत जरूरी है।</span>
+                    </span>
+                </div>
+                <div class="metric-value-container">
+                    <div class="metric-main-value">92%</div>
+                    <div class="metric-subvalue" id="metric2Sub">15 दिन के भीतर</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 92%;">92%</div>
+                </div>
+                <div class="trend-indicator up">
+                    <i class="fas fa-arrow-up"></i>
+                    <span id="trend2">पिछले महीने से 8% बेहतर</span>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span class="metric-title" id="metric3Title">कार्य पूर्णता</span>
+                    <span class="tooltip">
+                        <i class="fas fa-info-circle info-icon"></i>
+                        <span class="tooltip-text" id="tooltip3">शुरू किए गए कामों में से कितने काम पूरे हुए। ज्यादा
+                            पूरे काम = बेहतर प्रदर्शन।</span>
+                    </span>
+                </div>
+                <div class="metric-value-container">
+                    <div class="metric-main-value">1,245</div>
+                    <div class="metric-subvalue" id="metric3Sub">पूर्ण कार्य / 1,580 कुल</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 79%;">79%</div>
+                </div>
+                <div class="trend-indicator stable">
+                    <i class="fas fa-minus"></i>
+                    <span id="trend3">स्थिर प्रदर्शन</span>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-header">
+                    <span class="metric-title" id="metric4Title">बजट उपयोग</span>
+                    <span class="tooltip">
+                        <i class="fas fa-info-circle info-icon"></i>
+                        <span class="tooltip-text" id="tooltip4">मिले हुए बजट में से कितना खर्च हुआ। 70-90% सबसे अच्छा
+                            माना जाता है।</span>
+                    </span>
+                </div>
+                <div class="metric-value-container">
+                    <div class="metric-main-value">85%</div>
+                    <div class="metric-subvalue" id="metric4Sub">₹56.8 Cr / ₹66.8 Cr</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 85%;">85%</div>
+                </div>
+                <div class="trend-indicator up">
+                    <i class="fas fa-arrow-up"></i>
+                    <span id="trend4">अच्छा उपयोग</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <h3 class="chart-title" id="trendChartTitle">📈 पिछले 6 महीनों का रुझान</h3>
+            <div class="bar-chart" id="trendChart">
+                <div class="bar" style="height: 65%;">
+                    <span class="bar-value">65</span>
+                    <span class="bar-label">मई</span>
+                </div>
+                <div class="bar" style="height: 72%;">
+                    <span class="bar-value">72</span>
+                    <span class="bar-label">जून</span>
+                </div>
+                <div class="bar" style="height: 68%;">
+                    <span class="bar-value">68</span>
+                    <span class="bar-label">जुलाई</span>
+                </div>
+                <div class="bar" style="height: 75%;">
+                    <span class="bar-value">75</span>
+                    <span class="bar-label">अगस्त</span>
+                </div>
+                <div class="bar" style="height: 70%;">
+                    <span class="bar-value">70</span>
+                    <span class="bar-label">सितंबर</span>
+                </div>
+                <div class="bar" style="height: 78%;">
+                    <span class="bar-value">78</span>
+                    <span class="bar-label">अक्टूबर</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="educational-section">
+        <h2 class="dashboard-title" style="margin-bottom: 20px;" id="eduTitle">📚 मनरेगा के बारे में जानें</h2>
+        <div class="edu-card">
+            <h3><i class="fas fa-question-circle"></i> <span id="eduCard1Title">मनरेगा क्या है?</span></h3>
+            <p id="eduCard1Text">मनरेगा (महात्मा गांधी राष्ट्रीय ग्रामीण रोजगार गारंटी अधिनियम) भारत की एक योजना है जो
+                ग्रामीण क्षेत्रों में हर परिवार को साल में कम से कम 100 दिन का रोजगार देने की गारंटी देती है। यह योजना
+                2005 में शुरू की गई थी।</p>
+        </div>
+        <div class="edu-card">
+            <h3><i class="fas fa-users"></i> <span id="eduCard2Title">आपके अधिकार</span></h3>
+            <p id="eduCard2Text">हर ग्रामीण परिवार को जॉब कार्ड मिल सकता है। आवेदन के 15 दिन में काम मिलना चाहिए। वेतन
+                काम पूरा होने के 15 दिन में मिलना चाहिए। काम पर पानी, छाया और बच्चों की देखभाल की सुविधा मिलनी चाहिए।
+            </p>
+        </div>
+        <div class="edu-card">
+            <h3><i class="fas fa-phone"></i> <span id="eduCard3Title">शिकायत कैसे करें?</span></h3>
+            <p id="eduCard3Text">टोल-फ्री नंबर: 1800-111-555 या अपने ग्राम पंचायत या ब्लॉक कार्यालय में जाएं। ऑनलाइन
+                शिकायत: nrega.nic.in पर जाकर अपनी शिकायत दर्ज करें।</p>
+        </div>
+    </section>
+    <script src="script.js"></script>
+</body>
